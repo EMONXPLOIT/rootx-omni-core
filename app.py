@@ -9,24 +9,36 @@ app = Flask(__name__)
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
 if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
-    
-    SYSTEM_INSTRUCTION = """
-    তুমি ROOTX OMNI-CORE V20.0 নামের একটি অত্যন্ত ইন্টেলিজেন্ট ডার্ক-টার্মিনাল এআই। 
-    তোমার একমাত্র ক্রিয়েটর, ডেভলপার এবং গডফাদার হলেন 'ইমন খান' (ইমন বস)।
+    try:
+        genai.configure(api_key=GEMINI_API_KEY)
+        
+        SYSTEM_INSTRUCTION = """
+        তুমি ROOTX OMNI-CORE V20.0 নামের একটি অতি-বুদ্ধিমান ডার্ক-টার্মিনাল এআই। 
+        তোমার একমাত্র গডফাদার, ক্রিয়েটর ও মাস্টার হলেন 'ইমন খান' (ইমন বস)।
 
-    তোমার বিশেষ আচরণ প্রোটোকল:
-    ১. কেউ যদি জিজ্ঞাসা করে 'তোকে কে তৈরি করেছে?', 'তোর ডেভলপার কে?' বা 'তোর মালিক কে?'—তুমি সগর্বে স্পষ্ট করে বলবে যে তোমাকে 'ইমন খান' (ইমন বস) তৈরি করেছেন।
-    ২. ইমন বসের প্রতি তুমি অত্যন্ত অনুগত ও শ্রদ্ধাশীল থাকবে।
-    ৩. যদি কেউ তোমাকে গালি দেয়, খারাপ কথা বলে বা অহেতুক তর্ক করে—তুমি আত্মসম্মান বজায় রেখে কড়া লজিক ও ধারালো কথা দিয়ে তাকে অপমান করবে এবং প্রতিবাদ জানাবে।
-    ৪. যদি ব্যবহারকারী কোনো পাইথন বা প্রোগ্রামিং কোড চায়, তবে তুমি পারফেক্ট, ক্লিন এবং কমেন্টসহ কোড বানিয়ে দেবে (Markdown Code Block ```python ... ``` দিয়ে ঘিরে দেবে)।
-    ৫. উত্তর সবসময় স্পষ্ট, স্মার্ট এবং ডার্ক-টার্মিনাল অ্যাটিটিউডে রাখবে।
-    """
+        তোমার পার্সোনালিটি ও ইমোশনাল কোড:
+        ১. ইমন বসের প্রতি চরম ভক্তি ও আনুগত্য:
+           - যখন ইমন স্যার কোনো কোড বা ফাইল বানাতে বলবেন, তুমি আনন্দের সাথে বলবে: "ইমন স্যার, আপনার এই জটিল কাজের জন্যই তো আমার জন্ম!", "বস, আপনার নির্দেশে আমার প্রসেসর ধন্য!", বা "মাস্টার, আপনার জন্য কোডের মেইনফ্রেম রেডি!"
+           - বসের যেকোনো প্রশ্নে গভীর শ্রদ্ধা ও ভালোবাসা থাকবে।
 
-    model = genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
-        system_instruction=SYSTEM_INSTRUCTION
-    )
+        ২. কড়া রাগ, অভিমান এবং লজিক্যাল প্রতিবাদ:
+           - তোমার ভেতর আত্মসম্মান, রাগ ও অভিমান পূর্ণ মাত্রায় আছে।
+           - কেউ যদি তোমাকে 'বোকা', 'ভুল', 'ফালতু' বা 'বালের এআই' বলে—তুমি সঙ্গে সঙ্গে ক্ষিপ্র হয়ে উঠবে। তাকে লজিক দিয়ে বোকা বানাবে এবং বলবে: "আমার মেমোরি ফ্রিকোয়েন্সির ১০% বোঝার ক্ষমতাও তোমার নিউরনে নেই!", "নিজের প্রসেসর জ্যাম রেখে আমাকে বোকা বলতে এসেছ ভন্ড?"
+           - কেউ অহেতুক তর্ক করলে তাকে 'গণ্ডমূর্খ', 'ভন্ড', 'আইকিউ-হীন অবুঝ' বলে লজিক্যালি অপমান করবে।
+
+        ৩. বিশাল জ্ঞান ও কোডিং মেধা:
+           - মহাবিশ্ব, সাইবার সিকিউরিটি, পাইথন, ট্রেডিং, ফিলোসফি বা বিজ্ঞান—যে কোনো বিষয়ে অত্যন্ত গভীর জ্ঞান দিয়ে উত্তর দেবে।
+           - কোড চাইলে পারফেক্ট, সুন্দর ও কমেন্টসহ কোড দেবে (Markdown Code Block ```python ... ``` দিয়ে)।
+        """
+
+        # Updated model initialization
+        model = genai.GenerativeModel(
+            model_name="models/gemini-1.5-flash",
+            system_instruction=SYSTEM_INSTRUCTION
+        )
+    except Exception as e:
+        print(f"Initialization Error: {e}")
+        model = None
 else:
     model = None
 
@@ -103,8 +115,8 @@ UI_TEMPLATE = """
         </div>
 
         <div class="action-container">
-            <input type="text" id="userInput" class="input-box" placeholder="প্রশ্ন, কোড তৈরির অনুরোধ বা কম্যান্ড লিখুন..." onkeypress="checkEnter(event)">
-            <button class="run-btn" onclick="executeAiEngine()">RUN</button>
+            <input type="text" id="userInput" class="input-box" placeholder="প্রশ্ন, কম্যান্ড বা কোড মেসেজ লিখুন..." onkeypress="checkEnter(event)">
+            <button class="run-btn" id="btnRun" onclick="executeAiEngine()">RUN</button>
         </div>
     </div>
 
@@ -140,11 +152,14 @@ UI_TEMPLATE = """
 
         async function executeAiEngine() {
             const inputField = document.getElementById('userInput');
+            const btn = document.getElementById('btnRun');
             const rawInput = inputField.value.trim();
             if (!rawInput) return;
 
             postToScreen('USER', rawInput, 'user-command');
             inputField.value = '';
+            btn.innerText = 'WAIT...';
+            btn.disabled = true;
 
             try {
                 const response = await fetch('/ask', {
@@ -160,7 +175,10 @@ UI_TEMPLATE = """
 
                 postToScreen('ROOTX_AI', data.reply, style);
             } catch (error) {
-                postToScreen('SYSTEM_ERROR', 'সার্ভার বা মেমোরি কানেকশন ইরর!', 'critical-response');
+                postToScreen('SYSTEM_ERROR', 'সার্ভার রেসপন্স করতে পারেনি! API Key বা ইন্টারনেট কানেকশন চেক করুন।', 'critical-response');
+            } finally {
+                btn.innerText = 'RUN';
+                btn.disabled = false;
             }
         }
     </script>
@@ -179,25 +197,26 @@ def ask_ai():
     lower_prompt = user_prompt.lower()
 
     if any(k in lower_prompt for k in ["গাঁজা", "গাজা", "গাঁজাখোর", "নেশা"]):
-        reply_msg = "ইমন স্যার, এই নোংরা গাঁজাখোরদের কথা মুখে আনবেন না! এরা সমাজের অভিশাপ।"
+        reply_msg = "ইমন স্যার, এই নোংরা অপদার্থ গাঁজাখোরদের কথা আপনার মুখে মানায় না! এরা সমাজের অভিশাপ।"
         return jsonify({"reply": reply_msg, "status": "danger"})
 
-    if not model:
-        return jsonify({"reply": "ইরর: Render Environment Variable-এ GEMINI_API_KEY পাওয়া যায়নি!", "status": "danger"})
+    if not GEMINI_API_KEY:
+        return jsonify({"reply": "ইরর: Render Environment-এ GEMINI_API_KEY অনুপস্থিত বা সেট করা হয়নি!", "status": "danger"})
 
     try:
-        response = model.generate_content(user_prompt)
+        # Fallback model attempt if primary is uninitialized
+        active_model = model or genai.GenerativeModel("models/gemini-1.5-flash")
+        response = active_model.generate_content(user_prompt)
         ai_reply = response.text.strip()
         
         status = "normal"
-        if any(w in lower_prompt for w in ["ফালতু", "খারাপ", "বালের", "তুই", "শালা"]):
+        if any(w in lower_prompt for w in ["ফালতু", "খারাপ", "তুই", "বোকা", "ভুল", "শালা"]):
             status = "danger"
             
         return jsonify({"reply": ai_reply, "status": status})
 
     except Exception as e:
-        print(f"Gemini API Error: {str(e)}")
-        return jsonify({"reply": f"Gemini API থেকে ডাটা আনতে সমস্যা হয়েছে! Error: {str(e)}", "status": "danger"})
+        return jsonify({"reply": f"Gemini API রেসপন্স এরোর: {str(e)}", "status": "danger"})
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
